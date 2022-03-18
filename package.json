@@ -1,14 +1,14 @@
 {
-  "name": "dp-catalog-client",
+  "name": "@gammaspeckcc/dp-catalog-client",
   "version": "0.0.1",
-  "description": "OpenAPI client for dp-catalog-client",
+  "description": "OpenAPI client for @gammaspeckcc/dp-catalog-client",
   "author": "OpenAPI-Generator Contributors",
   "keywords": [
     "axios",
     "typescript",
     "openapi-client",
     "openapi-generator",
-    "dp-catalog-client"
+    "@gammaspeckcc/dp-catalog-client"
   ],
   "license": "Unlicense",
   "main": "./dist/index.js",
