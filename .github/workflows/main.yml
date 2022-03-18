@@ -1,9 +1,6 @@
 name: Node.js Package
 
-on:
-  push:
-    branches:
-      - master
+on: [workflow_dispatch]
 
 jobs:
   publish-gpr:
@@ -14,7 +11,7 @@ jobs:
         with:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
-          scope: '@gammaspeckcc'
+          scope: "@gammaspeckcc"
       - run: npm install
       - run: npm publish
         env:
