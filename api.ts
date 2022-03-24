@@ -353,6 +353,19 @@ export interface ColumnStat {
 /**
  * 
  * @export
+ * @interface CreateDomainServiceAccountRequest
+ */
+export interface CreateDomainServiceAccountRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateDomainServiceAccountRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateRoleRequestSchema
  */
 export interface CreateRoleRequestSchema {
@@ -2594,6 +2607,12 @@ export interface UserGetResponse {
      * @memberof UserGetResponse
      */
     'role'?: GetDomainRoleSchema;
+    /**
+     * 
+     * @type {UserTypeEnum}
+     * @memberof UserGetResponse
+     */
+    'type'?: UserTypeEnum;
 }
 /**
  * 
@@ -2727,6 +2746,12 @@ export interface UserLong {
      * @memberof UserLong
      */
     'role'?: GetDomainRoleSchema;
+    /**
+     * 
+     * @type {UserTypeEnum}
+     * @memberof UserLong
+     */
+    'type'?: UserTypeEnum;
 }
 /**
  * 
@@ -2862,6 +2887,12 @@ export interface UserProfileResponse {
     'role'?: GetDomainRoleSchema;
     /**
      * 
+     * @type {UserTypeEnum}
+     * @memberof UserProfileResponse
+     */
+    'type'?: UserTypeEnum;
+    /**
+     * 
      * @type {Array<Org>}
      * @memberof UserProfileResponse
      */
@@ -2884,6 +2915,12 @@ export interface UserProfileResponse {
      * @memberof UserProfileResponse
      */
     'subscribed_domains'?: Array<DomainSchema>;
+    /**
+     * 
+     * @type {Array<object>}
+     * @memberof UserProfileResponse
+     */
+    'secrets'?: Array<object>;
 }
 /**
  * 
@@ -2930,6 +2967,20 @@ export interface UserResourceGetResponse {
      */
     'table'?: Array<Table>;
 }
+/**
+ * An enumeration.
+ * @export
+ * @enum {string}
+ */
+
+export const UserTypeEnum = {
+    User: 'User',
+    ServiceAccount: 'ServiceAccount'
+} as const;
+
+export type UserTypeEnum = typeof UserTypeEnum[keyof typeof UserTypeEnum];
+
+
 /**
  * 
  * @export
@@ -3990,6 +4041,58 @@ export const DomainApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Create Service Account User
+         * @param {string} orgId 
+         * @param {string} domainName 
+         * @param {CreateDomainServiceAccountRequest} createDomainServiceAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createServiceAccountUser: async (orgId: string, domainName: string, createDomainServiceAccountRequest: CreateDomainServiceAccountRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgId' is not null or undefined
+            assertParamExists('createServiceAccountUser', 'orgId', orgId)
+            // verify required parameter 'domainName' is not null or undefined
+            assertParamExists('createServiceAccountUser', 'domainName', domainName)
+            // verify required parameter 'createDomainServiceAccountRequest' is not null or undefined
+            assertParamExists('createServiceAccountUser', 'createDomainServiceAccountRequest', createDomainServiceAccountRequest)
+            const localVarPath = `/v1/org/{org_id}/domain/{domain_name}/serviceAccount`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
+                .replace(`{${"domain_name"}}`, encodeURIComponent(String(domainName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication HTTPBearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            // authentication OAuth2 required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createDomainServiceAccountRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Delete Domain Rule
          * @param {string} orgId 
          * @param {string} domainName 
@@ -4806,6 +4909,19 @@ export const DomainApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Create Service Account User
+         * @param {string} orgId 
+         * @param {string} domainName 
+         * @param {CreateDomainServiceAccountRequest} createDomainServiceAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createServiceAccountUser(orgId: string, domainName: string, createDomainServiceAccountRequest: CreateDomainServiceAccountRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserProfileResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createServiceAccountUser(orgId, domainName, createDomainServiceAccountRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Delete Domain Rule
          * @param {string} orgId 
          * @param {string} domainName 
@@ -5068,6 +5184,18 @@ export const DomainApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @summary Create Service Account User
+         * @param {string} orgId 
+         * @param {string} domainName 
+         * @param {CreateDomainServiceAccountRequest} createDomainServiceAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createServiceAccountUser(orgId: string, domainName: string, createDomainServiceAccountRequest: CreateDomainServiceAccountRequest, options?: any): AxiosPromise<UserProfileResponse> {
+            return localVarFp.createServiceAccountUser(orgId, domainName, createDomainServiceAccountRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Delete Domain Rule
          * @param {string} orgId 
          * @param {string} domainName 
@@ -5311,6 +5439,18 @@ export interface DomainApiInterface {
      * @memberof DomainApiInterface
      */
     createDomainRule(orgId: string, domainName: string, createRuleRequestSchema: CreateRuleRequestSchema, options?: AxiosRequestConfig): AxiosPromise<GetRuleResponseSchema>;
+
+    /**
+     * 
+     * @summary Create Service Account User
+     * @param {string} orgId 
+     * @param {string} domainName 
+     * @param {CreateDomainServiceAccountRequest} createDomainServiceAccountRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DomainApiInterface
+     */
+    createServiceAccountUser(orgId: string, domainName: string, createDomainServiceAccountRequest: CreateDomainServiceAccountRequest, options?: AxiosRequestConfig): AxiosPromise<UserProfileResponse>;
 
     /**
      * 
@@ -5566,6 +5706,20 @@ export class DomainApi extends BaseAPI implements DomainApiInterface {
      */
     public createDomainRule(orgId: string, domainName: string, createRuleRequestSchema: CreateRuleRequestSchema, options?: AxiosRequestConfig) {
         return DomainApiFp(this.configuration).createDomainRule(orgId, domainName, createRuleRequestSchema, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Create Service Account User
+     * @param {string} orgId 
+     * @param {string} domainName 
+     * @param {CreateDomainServiceAccountRequest} createDomainServiceAccountRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DomainApi
+     */
+    public createServiceAccountUser(orgId: string, domainName: string, createDomainServiceAccountRequest: CreateDomainServiceAccountRequest, options?: AxiosRequestConfig) {
+        return DomainApiFp(this.configuration).createServiceAccountUser(orgId, domainName, createDomainServiceAccountRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -12514,6 +12668,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {string} orgId 
          * @param {AddUserRequest} addUserRequest 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         addUser: async (orgId: string, addUserRequest: AddUserRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -12559,25 +12714,25 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Add User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {string} resourceUri 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addUserResourceFollowed: async (userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('addUserResourceFollowed', 'userId', userId)
+        addUserResourceFollowed: async (resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'resourceType' is not null or undefined
             assertParamExists('addUserResourceFollowed', 'resourceType', resourceType)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('addUserResourceFollowed', 'userId', userId)
             // verify required parameter 'orgId' is not null or undefined
             assertParamExists('addUserResourceFollowed', 'orgId', orgId)
             // verify required parameter 'resourceUri' is not null or undefined
             assertParamExists('addUserResourceFollowed', 'resourceUri', resourceUri)
             const localVarPath = `/v1/org/{org_id}/user/{user_id}/follow/{resource_type}`
-                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)))
                 .replace(`{${"resource_type"}}`, encodeURIComponent(String(resourceType)))
+                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)))
                 .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12719,25 +12874,25 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Delete User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {string} resourceUri 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUserResourceFollowed: async (userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('deleteUserResourceFollowed', 'userId', userId)
+        deleteUserResourceFollowed: async (resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'resourceType' is not null or undefined
             assertParamExists('deleteUserResourceFollowed', 'resourceType', resourceType)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('deleteUserResourceFollowed', 'userId', userId)
             // verify required parameter 'orgId' is not null or undefined
             assertParamExists('deleteUserResourceFollowed', 'orgId', orgId)
             // verify required parameter 'resourceUri' is not null or undefined
             assertParamExists('deleteUserResourceFollowed', 'resourceUri', resourceUri)
             const localVarPath = `/v1/org/{org_id}/user/{user_id}/follow/{resource_type}`
-                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)))
                 .replace(`{${"resource_type"}}`, encodeURIComponent(String(resourceType)))
+                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)))
                 .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12917,23 +13072,23 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Get User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {boolean} [includeFavorites] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserResourceFollowed: async (userId: string, resourceType: ResourceType, orgId: string, includeFavorites?: boolean, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUserResourceFollowed', 'userId', userId)
+        getUserResourceFollowed: async (resourceType: ResourceType, userId: string, orgId: string, includeFavorites?: boolean, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'resourceType' is not null or undefined
             assertParamExists('getUserResourceFollowed', 'resourceType', resourceType)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserResourceFollowed', 'userId', userId)
             // verify required parameter 'orgId' is not null or undefined
             assertParamExists('getUserResourceFollowed', 'orgId', orgId)
             const localVarPath = `/v1/org/{org_id}/user/{user_id}/follow/{resource_type}`
-                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)))
                 .replace(`{${"resource_type"}}`, encodeURIComponent(String(resourceType)))
+                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)))
                 .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -13317,6 +13472,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {string} orgId 
          * @param {AddUserRequest} addUserRequest 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async addUser(orgId: string, addUserRequest: AddUserRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AddUserResponse>> {
@@ -13326,15 +13482,15 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Add User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {string} resourceUri 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserRelationPutResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addUserResourceFollowed(userId, resourceType, orgId, resourceUri, options);
+        async addUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserRelationPutResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addUserResourceFollowed(resourceType, userId, orgId, resourceUri, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -13366,15 +13522,15 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Delete User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {string} resourceUri 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserRelationDeleteResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserResourceFollowed(userId, resourceType, orgId, resourceUri, options);
+        async deleteUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserRelationDeleteResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserResourceFollowed(resourceType, userId, orgId, resourceUri, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -13416,15 +13572,15 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {boolean} [includeFavorites] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, includeFavorites?: boolean, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResourceGetResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserResourceFollowed(userId, resourceType, orgId, includeFavorites, options);
+        async getUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, includeFavorites?: boolean, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResourceGetResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserResourceFollowed(resourceType, userId, orgId, includeFavorites, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -13530,6 +13686,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {string} orgId 
          * @param {AddUserRequest} addUserRequest 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         addUser(orgId: string, addUserRequest: AddUserRequest, options?: any): AxiosPromise<AddUserResponse> {
@@ -13538,15 +13695,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Add User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {string} resourceUri 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: any): AxiosPromise<UserRelationPutResponse> {
-            return localVarFp.addUserResourceFollowed(userId, resourceType, orgId, resourceUri, options).then((request) => request(axios, basePath));
+        addUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: any): AxiosPromise<UserRelationPutResponse> {
+            return localVarFp.addUserResourceFollowed(resourceType, userId, orgId, resourceUri, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13575,15 +13732,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Delete User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {string} resourceUri 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: any): AxiosPromise<UserRelationDeleteResponse> {
-            return localVarFp.deleteUserResourceFollowed(userId, resourceType, orgId, resourceUri, options).then((request) => request(axios, basePath));
+        deleteUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: any): AxiosPromise<UserRelationDeleteResponse> {
+            return localVarFp.deleteUserResourceFollowed(resourceType, userId, orgId, resourceUri, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13621,15 +13778,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Get User Resource Followed
-         * @param {string} userId 
          * @param {ResourceType} resourceType 
+         * @param {string} userId 
          * @param {string} orgId 
          * @param {boolean} [includeFavorites] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, includeFavorites?: boolean, options?: any): AxiosPromise<UserResourceGetResponse> {
-            return localVarFp.getUserResourceFollowed(userId, resourceType, orgId, includeFavorites, options).then((request) => request(axios, basePath));
+        getUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, includeFavorites?: boolean, options?: any): AxiosPromise<UserResourceGetResponse> {
+            return localVarFp.getUserResourceFollowed(resourceType, userId, orgId, includeFavorites, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13726,6 +13883,7 @@ export interface UserApiInterface {
      * @param {string} orgId 
      * @param {AddUserRequest} addUserRequest 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof UserApiInterface
      */
@@ -13734,15 +13892,15 @@ export interface UserApiInterface {
     /**
      * 
      * @summary Add User Resource Followed
-     * @param {string} userId 
      * @param {ResourceType} resourceType 
+     * @param {string} userId 
      * @param {string} orgId 
      * @param {string} resourceUri 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApiInterface
      */
-    addUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: AxiosRequestConfig): AxiosPromise<UserRelationPutResponse>;
+    addUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: AxiosRequestConfig): AxiosPromise<UserRelationPutResponse>;
 
     /**
      * 
@@ -13771,15 +13929,15 @@ export interface UserApiInterface {
     /**
      * 
      * @summary Delete User Resource Followed
-     * @param {string} userId 
      * @param {ResourceType} resourceType 
+     * @param {string} userId 
      * @param {string} orgId 
      * @param {string} resourceUri 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApiInterface
      */
-    deleteUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: AxiosRequestConfig): AxiosPromise<UserRelationDeleteResponse>;
+    deleteUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: AxiosRequestConfig): AxiosPromise<UserRelationDeleteResponse>;
 
     /**
      * 
@@ -13817,15 +13975,15 @@ export interface UserApiInterface {
     /**
      * 
      * @summary Get User Resource Followed
-     * @param {string} userId 
      * @param {ResourceType} resourceType 
+     * @param {string} userId 
      * @param {string} orgId 
      * @param {boolean} [includeFavorites] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApiInterface
      */
-    getUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, includeFavorites?: boolean, options?: AxiosRequestConfig): AxiosPromise<UserResourceGetResponse>;
+    getUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, includeFavorites?: boolean, options?: AxiosRequestConfig): AxiosPromise<UserResourceGetResponse>;
 
     /**
      * 
@@ -13922,6 +14080,7 @@ export class UserApi extends BaseAPI implements UserApiInterface {
      * @param {string} orgId 
      * @param {AddUserRequest} addUserRequest 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof UserApi
      */
@@ -13932,16 +14091,16 @@ export class UserApi extends BaseAPI implements UserApiInterface {
     /**
      * 
      * @summary Add User Resource Followed
-     * @param {string} userId 
      * @param {ResourceType} resourceType 
+     * @param {string} userId 
      * @param {string} orgId 
      * @param {string} resourceUri 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public addUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).addUserResourceFollowed(userId, resourceType, orgId, resourceUri, options).then((request) => request(this.axios, this.basePath));
+    public addUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).addUserResourceFollowed(resourceType, userId, orgId, resourceUri, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -13975,16 +14134,16 @@ export class UserApi extends BaseAPI implements UserApiInterface {
     /**
      * 
      * @summary Delete User Resource Followed
-     * @param {string} userId 
      * @param {ResourceType} resourceType 
+     * @param {string} userId 
      * @param {string} orgId 
      * @param {string} resourceUri 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public deleteUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, resourceUri: string, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).deleteUserResourceFollowed(userId, resourceType, orgId, resourceUri, options).then((request) => request(this.axios, this.basePath));
+    public deleteUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, resourceUri: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).deleteUserResourceFollowed(resourceType, userId, orgId, resourceUri, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -14029,16 +14188,16 @@ export class UserApi extends BaseAPI implements UserApiInterface {
     /**
      * 
      * @summary Get User Resource Followed
-     * @param {string} userId 
      * @param {ResourceType} resourceType 
+     * @param {string} userId 
      * @param {string} orgId 
      * @param {boolean} [includeFavorites] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public getUserResourceFollowed(userId: string, resourceType: ResourceType, orgId: string, includeFavorites?: boolean, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).getUserResourceFollowed(userId, resourceType, orgId, includeFavorites, options).then((request) => request(this.axios, this.basePath));
+    public getUserResourceFollowed(resourceType: ResourceType, userId: string, orgId: string, includeFavorites?: boolean, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).getUserResourceFollowed(resourceType, userId, orgId, includeFavorites, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

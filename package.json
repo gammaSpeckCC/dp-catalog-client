@@ -1,14 +1,14 @@
 {
-  "name": "@gammaspeckcc/dp-catalog-client",
+  "name": "@gammaspeck-dp/datapipes-catalog-client-js",
   "version": "0.0.1",
-  "description": "OpenAPI client for @gammaspeckcc/dp-catalog-client",
+  "description": "OpenAPI client for @gammaspeck-dp/datapipes-catalog-client-js",
   "author": "OpenAPI-Generator Contributors",
   "keywords": [
     "axios",
     "typescript",
     "openapi-client",
     "openapi-generator",
-    "@gammaspeckcc/dp-catalog-client"
+    "@gammaspeck-dp/datapipes-catalog-client-js"
   ],
   "license": "Unlicense",
   "main": "./dist/index.js",
@@ -25,6 +25,6 @@
     "typescript": "^3.6.4"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@gammaspeckcc"
+    "registry": "https://npm.pkg.github.com/@gammaspeck"
   }
 }
